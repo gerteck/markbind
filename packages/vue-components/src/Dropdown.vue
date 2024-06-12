@@ -1,4 +1,5 @@
 <template>
+  <!-- TabGroup/Menu/NavBar Dropdowns -->
   <li
     v-if="isLi"
     ref="dropdown"
@@ -11,20 +12,25 @@
         :class="{'disabled': disabledBool}"
         data-bs-toggle="dropdown"
       >
-        <slot name="header"></slot>
+        <!-- TODO (gerteck): Fix missing header for Tabgroup-->
+        <slot name="header">fallback</slot>
       </a>
     </slot>
+
+
     <slot name="dropdown-menu" :class="[{ 'show': show }, { 'dropdown-menu-end': menuAlignRight }]">
       <ul class="dropdown-menu" :class="[{ 'show': show }, { 'dropdown-menu-end': menuAlignRight }]">
         <slot></slot>
       </ul>
     </slot>
   </li>
+  <!-- SubMenuDropdown -->
   <submenu v-else-if="isSubmenu" ref="submenu">
     <template v-for="(node, name) in $scopedSlots" #[name]>
       <slot :name="name"></slot>
     </template>
   </submenu>
+  <!-- Pure Dropdown -->
   <div
     v-else
     ref="dropdown"
@@ -155,6 +161,7 @@ export default {
     },
   },
   mounted() {
+    console.log('Header slot content:', this.$slots);
     const $el = $(this.$refs.dropdown);
     if (this.$slots.button) {
       // If the button is passed via props, manually add a data-bs-toggle

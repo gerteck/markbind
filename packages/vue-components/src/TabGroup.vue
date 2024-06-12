@@ -16,6 +16,7 @@ export default {
       type: [Boolean, String],
       default: false,
     },
+    // Needed for headerRendered() function
     header: {
       type: String,
       default: '',
@@ -33,6 +34,7 @@ export default {
       return ~this.tabs.indexOf(this._tabset.show);
     },
     headerRendered() {
+      console.log(this.$refs.header.innerHTML);
       return this.$refs.header.innerHTML;
     },
     disabledBool() {

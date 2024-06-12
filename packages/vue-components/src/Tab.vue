@@ -9,7 +9,9 @@
         <slot name="header"></slot>
       </div>
     </div>
+
     <slot></slot>
+    
     <hr />
   </div>
 </template>

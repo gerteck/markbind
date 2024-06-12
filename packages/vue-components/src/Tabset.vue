@@ -8,6 +8,7 @@
       role="tablist"
     >
       <template v-for="(t, index) in headers">
+        <!-- Tab -->
         <li
           v-if="!t._tabgroup"
           :key="index"
@@ -20,14 +21,26 @@
             href="#"
           ><span v-html="t.headerRendered"></span></a>
         </li>
+        
+        <!-- TabGroup -->
+        <!-- TODO: Problem is heree, header is not recognised for some reason -->
+        <!-- Throws the header from TabGroup to dropdown to process -->
+        <!-- However, dropdown just saves it as an attribute and not a slot -->
+
         <dropdown
           v-else
           :key="index"
           class="nav-item"
+          test="gay"
           :header="t.headerRendered"
           :class="{active:t.active}"
           :disabled="t.disabled"
         >
+          <!-- This works, but doesnt seem to fix it a the core -->
+           
+          <!-- <template v-slot:header>
+            <span v-html="t.headerRendered"></span>
+          </template> -->
           <li v-for="(tab, tabIndex) in t.tabs" :key="tabIndex">
             <a
               class="nav-link"
@@ -40,6 +53,8 @@
         </dropdown>
       </template>
     </ul>
+
+    <!-- Nav Content -->
     <div ref="tab-content" class="tab-content">
       <slot></slot>
     </div>

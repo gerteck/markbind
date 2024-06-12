@@ -20,14 +20,17 @@
       Some stuff about stars ...
     </tab>
     <tab header="Disabled Moon :new_moon:" disabled>
+      some disabled stuff
     </tab>
   </tab-group>
   <tab-group header="Disabled fourth tab group" disabled>
     <tab header="Hidden tab">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ullamcorper ultrices lobortis.
     </tab>
+    
   </tab-group>
 </tabs>
+
 </variable>
 </include>
 
