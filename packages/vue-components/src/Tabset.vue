@@ -31,13 +31,13 @@
           v-else
           :key="index"
           class="nav-item"
-          test="gay"
           :header="t.headerRendered"
           :class="{active:t.active}"
           :disabled="t.disabled"
         >
           <!-- This works, but doesnt seem to fix it a the core -->
-           
+           <!-- TODO  -->
+
           <!-- <template v-slot:header>
             <span v-html="t.headerRendered"></span>
           </template> -->
