@@ -1382,6 +1382,9 @@ export class Site {
     };
     options.message = options.message.concat(' [skip ci]');
 
+    logger.info('CACHE_DIR: ');
+    logger.info(process.env.CACHE_DIR);
+
     if (ciTokenVar) {
       const ciToken = _.isBoolean(ciTokenVar) ? 'GITHUB_TOKEN' : ciTokenVar;
       if (!process.env[ciToken]) {
@@ -1430,6 +1433,8 @@ export class Site {
       options.repo = `https://x-access-token:${githubToken}@github.com/${repoSlug}.git`;
     }
 
+    logger.info(basePath);
+    logger.info(options);
     // Waits for the repo to be updated.
     await publish(basePath, options);
     return options;
