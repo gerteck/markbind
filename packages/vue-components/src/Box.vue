@@ -92,12 +92,23 @@
         <div class="contents" :style="customColorStyle()">
           <slot></slot>
         </div>
-
+        
+        <!-- todo (gerteck remove padding or smth) -->
         <!-- dismiss button on the right, not shown if there is a header -->
         <button
           v-if="dismissible && !headerBool()"
           type="button"
           class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        >
+        </button>
+
+        <!-- dismiss button to the right of the header -->
+        <button
+          v-if="dismissible"
+          type="button"
+          class="btn-close close-with-heading"
           data-bs-dismiss="alert"
           aria-label="Close"
         >
@@ -275,6 +286,7 @@ export default {
 };
 </script>
 
+<!--
 <style scoped>
     .box-container {
         padding: 0;
@@ -405,6 +417,146 @@ export default {
             padding: 0;
         }
     }
+</style>
+-->
+<style scoped>
+.box-container {
+    padding: 0;
+    border-radius: 6px;
+    border: 1px solid red; /* Added border */
+}
+
+.box-header-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 0.4rem 1.25rem 0.28rem;
+    border-radius: 6px 6px 0 0;
+    border: 1px solid blue; /* Added border */
+}
+
+.box-body-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid green; /* Added border */
+}
+
+.box-container.seamless > .header-and-body > .box-body-wrapper {
+    padding: 0.75rem 0.5rem;
+}
+
+.contents {
+    padding: 0 6px;
+    width: 100%;
+    min-width: 0;
+    border: 1px solid orange; /* Added border */
+}
+
+.box-container.seamless > .header-and-body > div.box-body-wrapper > .contents {
+    padding-left: 12px;
+}
+
+.heading {
+    display: inline;
+    float: right;
+    font-weight: normal;
+    color: inherit;
+    background-color: rgb(240 240 240 / 60%);
+    width: auto;
+    padding: 3px 5px 4px;
+    border-width: 0;
+    border-radius: 0 6px;
+    margin: -13px -27px 0 15px;
+}
+
+.box-body-wrapper-with-heading {
+    padding-top: 0.5rem;
+}
+
+.alert-dismissible-box {
+    padding-right: 4rem;
+}
+
+.box-header {
+    font-weight: 500;
+}
+
+.icon-wrapper {
+    display: inline;
+    text-align: center;
+    margin-right: 0.5em;
+    min-width: 1em;
+    border: 1px solid purple; /* Added border */
+}
+
+.close-with-heading {
+    top: 0;
+    right: 0;
+    position: absolute;
+    padding: 1rem;
+    border: 1px solid pink; /* Added border */
+}
+
+.close-with-heading > span {
+    vertical-align: text-top;
+}
+
+.alert-dismissible-box .btn-close {
+    padding: 1rem;
+}
+
+.contents > :last-child {
+    margin-bottom: 0;
+}
+
+.alert-default {
+    color: #24292e;
+    background-color: #f6f8fa;
+    border-color: #e8ebef;
+}
+
+.alert-border-left {
+    background-color: #f9f8f8;
+    border-left: solid;
+    border-width: 0 0 0 5px;
+}
+
+.vertical-divider {
+    width: 4px;
+    border: 1px solid black; /* Added border */
+}
+
+.horizontal-divider {
+    margin: 0 auto;
+    width: calc(100% - 2.5rem);
+    height: 3px;
+    border: 1px solid brown; /* Added border */
+}
+
+.no-background {
+    background: none;
+}
+
+.no-border {
+    border: none;
+}
+
+@media screen and (width <= 768px) {
+    .box-header-wrapper {
+        padding: 0.75rem 0.75rem 0.1rem;
+    }
+
+    .box-body-wrapper {
+        padding: 0.75rem;
+    }
+
+    .contents {
+        padding: 0;
+    }
+}
 </style>
 
 <!-- TODO move this once we upgrade vue-loader version for scoped deep selectors -->
