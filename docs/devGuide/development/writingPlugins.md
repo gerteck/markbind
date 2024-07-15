@@ -126,7 +126,7 @@ An example of a plugin which adds links and scripts to the page:
 // myPlugin.js
 
 module.exports = {
-  getLinks: (pluginContext, frontmatter, content) => ['<link rel="STYLESHEET_LINK">'],
+  getLinks: (pluginContext, frontmatter, content) => ['<link rel="stylesheet" href="STYLESHEET_LINK">'],
   getScripts: (pluginContext, frontmatter, content) => [
     '<script src="SCRIPT_LINK"></script>',
     '<script>alert("hello")</script>'
