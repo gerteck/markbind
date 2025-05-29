@@ -45,6 +45,9 @@ async function compileVuePageCreateAndReturnScript(
     id: pageConfig.sourcePath,
     compilerOptions,
   };
+
+  console.log(content);
+
   const compiled = compileTemplate(templateOptions);
   const outputContent = compiled.code;
 
@@ -102,6 +105,7 @@ async function renderVuePage(renderFn: string): Promise<string> {
   app.config.compilerOptions.whitespace = 'preserve';
   const html = await renderToString(app);
   const wrappedHtml = `<div id="app">${html}</div>`;
+  console.log(wrappedHtml);
   return wrappedHtml;
 }
 
