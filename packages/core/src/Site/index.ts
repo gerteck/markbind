@@ -6,6 +6,8 @@ import walkSync from 'walk-sync';
 import simpleGit, { SimpleGit } from 'simple-git';
 import Bluebird from 'bluebird';
 import ghpages from 'gh-pages';
+// Update typescript module to ES Modules to use.
+// import pagefind from 'pagefind';
 
 import { Template as NunjucksTemplate } from 'nunjucks';
 import { SiteConfig, SiteConfigPage, SiteConfigStyle } from './SiteConfig';
@@ -529,6 +531,7 @@ export class Site {
       await this.copyOcticonsAsset();
       await this.copyMaterialIconsAsset();
       await this.writeSiteData();
+      // await this.indexSiteWithPagefind();
       this.calculateBuildTimeForGenerate(startTime, lazyWebsiteGenerationString);
       if (this.backgroundBuildMode) {
         this.backgroundBuildNotViewedFiles();
@@ -537,6 +540,26 @@ export class Site {
       await Site.rejectHandler(error, [this.tempPath, this.outputPath]);
     }
   }
+
+  // /**
+  //  * Indexes all the pages of the site using pagefind for pagefind plugin.
+  //  */
+  // async indexSiteWithPagefind() {
+  //   logger.info('Creating Pagefind Search Index');
+  //   const newIndex = await pagefind.createIndex({
+  //     keepIndexUrl: true,
+  //     verbose: true,
+  //     logfile: 'debug.log',
+  //   });
+  //   const { index } = newIndex;
+  //   if (index) {
+  //     const { errors, page_count } = await index.addDirectory({ path: this.outputPath });
+  //     errors.forEach(error => logger.error(error));
+  //     logger.info(`Pagefind indexed ${page_count} pages`);
+  //     await index.writeFiles({ outputPath: `${this.outputPath}/pagefind` });
+  //   }
+  //   await pagefind.close();
+  // }
 
   /**
    * Helper function for generate().
