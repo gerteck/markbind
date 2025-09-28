@@ -34,7 +34,7 @@ export function shiftSlotNodeDeeper(node: MbNode) {
 
       newSlotNode.attribs[vslotShorthand] = '';
       if (child.attribs) {
-        delete child.attribs[vslotShorthand];
+        delete (child.attribs as any)[vslotShorthand];
       }
 
       newSlotNode.parent = node;
@@ -61,7 +61,7 @@ export function transformOldSlotSyntax(node: MbNode) {
     if (child.attribs && _.has(child.attribs, 'slot')) {
       const vslotShorthandName = `#${child.attribs.slot}`;
       child.attribs[vslotShorthandName] = '';
-      delete child.attribs.slot;
+      delete (child.attribs as any).slot;
     }
   });
 }

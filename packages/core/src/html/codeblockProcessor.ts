@@ -177,7 +177,7 @@ export function highlightCodeBlock(node: MbNode) {
         return [start, end, color];
       });
     bounds.forEach(([start, end, color]) => traverseLinePart(lineNode, Number(start), Number(end), color));
-    delete lineNode.attribs['hl-data'];
+    delete (lineNode.attribs as any)['hl-data'];
   });
 }
 

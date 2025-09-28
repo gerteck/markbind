@@ -29,4 +29,4 @@ export const _ = {
   startCase,
   union,
   uniq,
-};
+} as any;
