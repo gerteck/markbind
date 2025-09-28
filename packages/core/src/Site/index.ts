@@ -342,12 +342,12 @@ export class Site {
    * Updates the paths to be traversed as addressable pages and returns a list of filepaths to be deleted
    */
   updateAddressablePages() {
-    const oldAddressablePagesSources = this.addressablePages.slice().map(page => page.src);
+    const oldAddressablePagesSources = this.addressablePages.slice().map((page: AddressablePage) => page.src);
     this.collectAddressablePages();
-    const newAddressablePagesSources = this.addressablePages.map(page => page.src);
+    const newAddressablePagesSources = this.addressablePages.map((page: AddressablePage) => page.src);
 
     return _.difference(oldAddressablePagesSources, newAddressablePagesSources)
-      .map(filePath => fsUtil.setExtension(filePath, '.html'));
+      .map((filePath: string) => fsUtil.setExtension(filePath, '.html'));
   }
 
   getPageGlobPaths(page: SiteConfigPage, pagesExclude: string[]) {
@@ -368,31 +368,36 @@ export class Site {
    */
   collectAddressablePages() {
     const { pages, pagesExclude } = this.siteConfig;
-    const pagesFromSrc = _.flatMap(pages.filter(page => page.src), page => (Array.isArray(page.src)
-      ? page.src.map(pageSrc => ({ ...page, src: pageSrc }))
-      : [page])) as unknown as AddressablePage[];
+    const pagesFromSrc = _.flatMap(
+      pages.filter((page: SiteConfigPage) => page.src),
+      (page: SiteConfigPage) => (Array.isArray(page.src)
+        ? (page.src as string[]).map((pageSrc: string) => ({ ...page, src: pageSrc }))
+        : [page]),
+    ) as unknown as AddressablePage[];
     const set = new Set();
     const duplicatePages = pagesFromSrc
-      .filter(page => set.size === set.add(page.src).size)
-      .map(page => page.src);
+      .filter((page: AddressablePage) => set.size === set.add(page.src).size)
+      .map((page: AddressablePage) => page.src);
     if (duplicatePages.length > 0) {
       throw new Error(`Duplicate page entries found in site config: ${_.uniq(duplicatePages).join(', ')}`);
     }
-    const pagesFromGlobs = _.flatMap(pages.filter(page => page.glob),
-                                     page => this.getPageGlobPaths(page, pagesExclude)
-                                       .map(filePath => ({
-                                         src: filePath,
-                                         searchable: page.searchable,
-                                         layout: page.layout,
-                                         frontmatter: page.frontmatter,
-                                       }))) as AddressablePage[];
+    const pagesFromGlobs = _.flatMap(
+      pages.filter((page: SiteConfigPage) => page.glob),
+      (page: SiteConfigPage) => this.getPageGlobPaths(page, pagesExclude)
+        .map((filePath: string) => ({
+          src: filePath,
+          searchable: page.searchable,
+          layout: page.layout,
+          frontmatter: page.frontmatter,
+        })),
+    ) as AddressablePage[];
     /*
      Add pages collected from globs and merge properties for pages
      Page properties collected from src have priority over page properties from globs,
      while page properties from later entries take priority over earlier ones.
      */
     const filteredPages: Record<string, AddressablePage> = {};
-    pagesFromGlobs.concat(pagesFromSrc).forEach((page) => {
+    pagesFromGlobs.concat(pagesFromSrc).forEach((page: AddressablePage) => {
       const filteredPage = _.omitBy(page, _.isUndefined) as AddressablePage;
       filteredPages[page.src] = page.src in filteredPages
         ? { ...filteredPages[page.src], ...filteredPage }
@@ -400,7 +405,7 @@ export class Site {
     });
     this.addressablePages = Object.values(filteredPages);
     this.addressablePagesSource.length = 0;
-    this.addressablePages.forEach((page) => {
+    this.addressablePages.forEach((page: AddressablePage) => {
       this.addressablePagesSource.push(fsUtil.removeExtensionPosix(page.src));
     });
   }
@@ -576,7 +581,7 @@ export class Site {
     const viewedPagesArray = Array.isArray(viewedPages) ? viewedPages : [viewedPages];
     this.pages.forEach((page) => {
       const normalizedUrl = fsUtil.removeExtension(page.pageConfig.sourcePath);
-      if (!viewedPagesArray.some(viewedPage => normalizedUrl === viewedPage)) {
+      if (!viewedPagesArray.some((viewedPage: string) => normalizedUrl === viewedPage)) {
         this.toRebuild.add(normalizedUrl);
       }
     });
@@ -635,11 +640,11 @@ export class Site {
     const startTime = new Date();
     const normalizedUrlArray = Array.isArray(normalizedUrls) ? normalizedUrls : [normalizedUrls];
     const uniqueUrls = _.uniq(normalizedUrlArray);
-    uniqueUrls.forEach(normalizedUrl => logger.info(
+    uniqueUrls.forEach((normalizedUrl: string) => logger.info(
       `Building ${normalizedUrl} as some of its dependencies were changed since the last visit`));
 
-    const pagesToRebuild = this.pages.filter(page =>
-      uniqueUrls.some(pageUrl => fsUtil.removeExtension(page.pageConfig.sourcePath) === pageUrl));
+    const pagesToRebuild = this.pages.filter((page: Page) =>
+      uniqueUrls.some((pageUrl: string) => fsUtil.removeExtension(page.pageConfig.sourcePath) === pageUrl));
     const pageGenerationTask = {
       mode: 'async',
       pages: pagesToRebuild,
@@ -735,23 +740,28 @@ export class Site {
   }
 
   async _buildMultipleAssets(filePaths: string | string[]) {
-    const filePathArray = Array.isArray(filePaths) ? filePaths : [filePaths];
-    const uniquePaths = _.uniq(filePathArray);
+    const filePathArray: string[] = Array.isArray(filePaths) ? filePaths : [filePaths];
+    const uniquePaths: string[] = _.uniq(filePathArray);
     const fileIgnore = ignore().add(this.siteConfig.ignore);
-    const fileRelativePaths = uniquePaths.map(filePath => path.relative(this.rootPath, filePath));
+    const fileRelativePaths: string[] = uniquePaths.map(
+      (filePath: string) => path.relative(this.rootPath, filePath),
+    );
     const copyAssets = fileIgnore.filter(fileRelativePaths)
-      .map(asset => fs.copy(path.join(this.rootPath, asset), path.join(this.outputPath, asset)));
+      .map((asset: string) => fs.copy(path.join(this.rootPath, asset), path.join(this.outputPath, asset)));
     await Promise.all(copyAssets);
     logger.info('Assets built');
   }
 
   async _removeMultipleAssets(filePaths: string | string[]) {
-    const filePathArray = Array.isArray(filePaths) ? filePaths : [filePaths];
-    const uniquePaths = _.uniq(filePathArray);
-    const fileRelativePaths = uniquePaths.map(filePath => path.relative(this.rootPath, filePath));
-    const filesToRemove = fileRelativePaths.map(
-      fileRelativePath => path.join(this.outputPath, fileRelativePath));
-    const removeFiles = filesToRemove.map(asset => fs.remove(asset));
+    const filePathArray: string[] = Array.isArray(filePaths) ? filePaths : [filePaths];
+    const uniquePaths: string[] = _.uniq(filePathArray);
+    const fileRelativePaths: string[] = uniquePaths.map(
+      (filePath: string) => path.relative(this.rootPath, filePath),
+    );
+    const filesToRemove: string[] = fileRelativePaths.map(
+      (fileRelativePath: string) => path.join(this.outputPath, fileRelativePath),
+    );
+    const removeFiles = filesToRemove.map((asset: string) => fs.remove(asset));
     if (removeFiles.length !== 0) {
       await Promise.all(removeFiles);
       logger.debug('Assets removed');
@@ -782,7 +792,7 @@ export class Site {
 
     const oldSiteConfig = this.siteConfig;
     const oldAddressablePages = this.addressablePages.slice();
-    const oldPagesSrc = oldAddressablePages.map(page => page.src);
+    const oldPagesSrc = oldAddressablePages.map((page: AddressablePage) => page.src);
     await this.readSiteConfig();
     await this.handleIgnoreReload(oldSiteConfig.ignore);
     await this.handlePageReload(oldAddressablePages, oldPagesSrc, oldSiteConfig);
@@ -805,7 +815,7 @@ export class Site {
 
     const addedPages = _.differenceWith(this.addressablePages, oldAddressablePages, isNewPage);
     const removedPages = _.differenceWith(oldAddressablePages, this.addressablePages, isNewPage)
-      .map(filePath => fsUtil.setExtension(filePath.src as string, '.html'));
+      .map((filePath: AddressablePage) => fsUtil.setExtension(filePath.src as string, '.html'));
 
     // Checks if any attributes of site.json requiring a global rebuild are modified
     const isGlobalConfigModified = () => !_.isEqual(oldSiteConfig.faviconPath, this.siteConfig.faviconPath)
@@ -830,11 +840,19 @@ export class Site {
       await this.writeSiteData();
     } else {
       // Get pages with edited attributes but with the same src
-      const editedPages = _.differenceWith(this.addressablePages, oldAddressablePages, (newPage, oldPage) =>
-        _.isEqual(newPage, oldPage) || !oldPagesSrc.includes(newPage.src));
+      const editedPages = _.differenceWith(
+        this.addressablePages,
+        oldAddressablePages,
+        (newPage: AddressablePage, oldPage: AddressablePage) =>
+          _.isEqual(newPage, oldPage) || !oldPagesSrc.includes(newPage.src),
+      );
       this.updatePages(editedPages);
-      const siteConfigDirectory = path.dirname(path.join(this.rootPath, this.siteConfigPath));
-      this.regenerateAffectedPages(editedPages.map(page => path.join(siteConfigDirectory, page.src)));
+      const siteConfigDirectory = path.dirname(
+        path.join(this.rootPath, this.siteConfigPath),
+      );
+      this.regenerateAffectedPages(
+        editedPages.map((page: AddressablePage) => path.join(siteConfigDirectory, page.src)),
+      );
     }
   }
 
@@ -882,7 +900,7 @@ export class Site {
    * @returns whether the file path is a dependency of any of the site's pages
    */
   isDependencyOfPage(filePath: string): boolean {
-    return this.pages.some(page => page.isDependency(filePath))
+    return this.pages.some((page: Page) => page.isDependency(filePath))
       || fsUtil.ensurePosix(filePath).endsWith(USER_VARIABLES_PATH);
   }
 
@@ -894,15 +912,19 @@ export class Site {
   isFilepathAPage(filePath: string): boolean {
     const { pages, pagesExclude } = this.siteConfig;
     const relativeFilePath = fsUtil.ensurePosix(path.relative(this.rootPath, filePath));
-    const srcesFromPages = _.flatMap(pages.filter(page => page.src),
-                                     page => (Array.isArray(page.src) ? page.src : [page.src]));
+    const srcesFromPages = _.flatMap(
+      pages.filter((page: SiteConfigPage) => page.src),
+      (page: SiteConfigPage) => (Array.isArray(page.src)
+        ? page.src
+        : [page.src] as (string | undefined)[]),
+    );
     if (srcesFromPages.includes(relativeFilePath)) {
       return true;
     }
 
-    const filePathsFromGlobs = _.flatMap(pages.filter(page => page.glob),
-                                         page => this.getPageGlobPaths(page, pagesExclude));
-    return filePathsFromGlobs.some(fp => fp === relativeFilePath);
+    const filePathsFromGlobs = _.flatMap(pages.filter((page: SiteConfigPage) => page.glob),
+                                         (page: SiteConfigPage) => this.getPageGlobPaths(page, pagesExclude));
+    return filePathsFromGlobs.some((fp: string) => fp === relativeFilePath);
   }
 
   getFavIconUrl() {
@@ -924,7 +946,7 @@ export class Site {
    * Maps an array of addressable pages to an array of Page object
    */
   mapAddressablePagesToPages(addressablePages: AddressablePage[], faviconUrl: string | undefined) {
-    this.pages = addressablePages.map(page => this.createNewPage(page, faviconUrl));
+    this.pages = addressablePages.map((page: AddressablePage) => this.createNewPage(page, faviconUrl));
   }
 
   /**
@@ -1389,7 +1411,7 @@ export class Site {
     }
 
     if (ciTokenVar) {
-      const ciToken = _.isBoolean(ciTokenVar) ? 'GITHUB_TOKEN' : ciTokenVar;
+      const ciToken = _.isBoolean(ciTokenVar) ? 'GITHUB_TOKEN' : (ciTokenVar as string);
       if (!process.env[ciToken]) {
         throw new Error(`The environment variable ${ciToken} does not exist.`);
       }

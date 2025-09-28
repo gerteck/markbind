@@ -24,7 +24,6 @@
   "scripts": {
     "compile": "tsc",
     "build": "tsc --noEmitOnError",
-    "prepare": "npm run build",
     "test": "jest --colors"
   },
   "dependencies": {
@@ -34,7 +33,7 @@
     "@sindresorhus/slugify": "^0.9.1",
     "@tlylt/markdown-it-imsize": "^3.0.0",
     "bluebird": "^3.7.2",
-    "bootstrap-icons": "^1.13.1",
+      "bootstrap-icons": "^1.11.3",
     "bootswatch": "5.1.3",
     "cheerio": "^0.22.0",
     "csv-parse": "^4.16.3",
@@ -52,6 +51,7 @@
     "markdown-it-attrs": "^4.3.1",
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-linkify-images": "^3.0.0",
+    "markdown-it-regexp": "^0.4.0",
     "markdown-it-mark": "^3.0.1",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
@@ -65,10 +65,10 @@
     "path-is-inside": "^1.0.2",
     "simple-git": "^3.28.0",
     "url-parse": "^1.5.10",
-    "uuid": "^8.3.2",
+    "uuid": "^9.0.1",
     "vue": "3.3.11",
     "walk-sync": "^2.2.0",
-    "winston": "^2.4.7"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

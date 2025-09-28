@@ -1,17 +1,15 @@
-const chalk = require('chalk');
+const chalkModule = require('chalk');
 const figlet = require('figlet');
 const DailyRotateFile = require('winston-daily-rotate-file');
 const winston = require('winston');
-
 const coreLogger = require('@markbind/core/src/utils/logger');
+
+const chalk = chalkModule.default || chalkModule;
 
 // @markbind/core's consoleTransport but with level: info
 const consoleTransport = new (winston.transports.Console)({
-  colorize: true,
-  handleExceptions: true,
-  humanReadableUnhandledException: true,
   level: 'info',
-  showLevel: true,
+  handleExceptions: true,
 });
 
 function useDebugConsole() {
@@ -23,10 +21,8 @@ const dailyRotateFileTransport = new DailyRotateFile({
   dirname: '_markbind/logs',
   filename: 'markbind-%DATE%.log',
   handleExceptions: true,
-  humanReadableUnhandledException: true,
   level: 'debug',
   maxFiles: 5,
-  showLevel: true,
 });
 
 // Reconfigure the default instance logger winston provides with DailyRotateFile for markbind-cli
@@ -36,6 +32,10 @@ winston.configure({
     consoleTransport,
     dailyRotateFileTransport,
   ],
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`),
+  ),
 });
 
 module.exports = {

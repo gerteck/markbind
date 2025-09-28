@@ -11,26 +11,28 @@ const removeProgressBar = () => {
 };
 
 const consoleTransport = new winston.transports.Console({
-  colorize: true,
-  handleExceptions: true,
-  humanReadableUnhandledException: true,
   level: 'debug',
-  showLevel: true,
+  handleExceptions: true,
 });
 
 winston.configure({
   exitOnError: false,
   transports: [consoleTransport],
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.timestamp(),
+    winston.format.printf(({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`),
+  ),
 });
 
 // create a wrapper for error messages
 const errorWrap = (input: any) => {
   if (progressBar) {
     progressBar.interruptBegin();
-    winston.error(input);
+    winston.error(input as any);
     progressBar.interruptEnd();
   } else {
-    winston.error(input);
+    winston.error(input as any);
   }
 };
 
@@ -38,10 +40,10 @@ const errorWrap = (input: any) => {
 const warnWrap = (input: any) => {
   if (progressBar) {
     progressBar.interruptBegin();
-    winston.warn(input);
+    winston.warn(input as any);
     progressBar.interruptEnd();
   } else {
-    winston.warn(input);
+    winston.warn(input as any);
   }
 };
 
@@ -49,10 +51,10 @@ const warnWrap = (input: any) => {
 const infoWrap = (input: any) => {
   if (progressBar) {
     progressBar.interruptBegin();
-    winston.info(input);
+    winston.info(input as any);
     progressBar.interruptEnd();
   } else {
-    winston.info(input);
+    winston.info(input as any);
   }
 };
 

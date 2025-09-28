@@ -106,9 +106,9 @@ export class Template {
    */
   collectNavigablePages() {
     const { pages, pagesExclude } = this.siteConfig;
-    const pagesFromGlobs = _.flatMap(pages.filter(page => page.glob),
-                                     page => this.getPageGlobPaths(page, pagesExclude)
-                                       .map(filePath => ({
+    const pagesFromGlobs = _.flatMap(pages.filter((page: SiteConfigPage) => page.glob),
+                                     (page: SiteConfigPage) => this.getPageGlobPaths(page, pagesExclude)
+                                       .map((filePath: string) => ({
                                          src: filePath,
                                          title: page.title,
                                        }))) as NaviagablePage[];
@@ -122,11 +122,11 @@ export class Template {
   async addIndexPage() {
     const indexPagePath = path.join(this.rootPath, INDEX_MARKDOWN_FILE);
     const fileNames = ['README.md', 'Home.md'];
-    const filePath = fileNames.find(fileName => fs.existsSync(path.join(this.rootPath, fileName)));
+    const filePath = fileNames.find((fileName: string) => fs.existsSync(path.join(this.rootPath, fileName)));
     // if none of the files exist, do nothing
     if (_.isUndefined(filePath)) return;
     try {
-      await fs.copy(path.join(this.rootPath, filePath), indexPagePath);
+      await fs.copy(path.join(this.rootPath, filePath as string), indexPagePath);
     } catch (error) {
       throw new Error(`Failed to copy over ${filePath}`);
     }

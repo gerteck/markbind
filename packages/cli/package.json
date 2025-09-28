@@ -28,7 +28,7 @@
     "@markbind/core": "6.0.2",
     "@markbind/core-web": "6.0.2",
     "bluebird": "^3.7.2",
-    "chalk": "^3.0.0",
+    "chalk": "^4.1.2",
     "cheerio": "^0.22.0",
     "chokidar": "^3.6.0",
     "colors": "1.4.0",
@@ -39,8 +39,8 @@
     "live-server": "1.2.2",
     "lodash": "^4.17.21",
     "url-parse": "^1.5.10",
-    "winston": "^2.4.7",
-    "winston-daily-rotate-file": "^3.10.0"
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@types/url-parse": "^1.4.8",

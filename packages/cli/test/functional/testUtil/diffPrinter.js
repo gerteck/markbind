@@ -1,4 +1,6 @@
-const chalk = require('chalk');
+const chalkModule = require('chalk');
+
+const chalk = chalkModule.default || chalkModule;
 
 const EMPTY_LINE = '|-------------------empty-line-------------------|';
 const CONSECUTIVE_NEWLINE_REGEX = /\n{2,}/g;
