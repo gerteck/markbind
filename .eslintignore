@@ -27,6 +27,8 @@ packages/core/test/unit/**/*.js
 packages/core/index.js
 
 packages/core/src/lib/markdown-it/plugins/*.js
+packages/core/src/lib/progress/*.js
+
 
 # Rules for pure JS files
 packages/core/src/lib/markdown-it/patches/*

@@ -105,4 +105,5 @@ packages/core/test/unit/**/*.js
 packages/core/index.js
 
 packages/core/src/lib/markdown-it/plugins/*.js
+packages/core/src/lib/progress/*.js
 # --- packages/core end ---
