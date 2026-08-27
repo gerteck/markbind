@@ -1,6 +1,9 @@
 import markdownIt from 'markdown-it';
 
 import { centertext_plugin } from '../../../../../src/lib/markdown-it/plugins/markdown-it-center-text.js';
+import {
+  createDoubleDelimiterInlineRule,
+} from '../../../../../src/lib/markdown-it/plugins/markdown-it-double-delimiter.js';
 
 describe('markdown-it-center-text plugin', () => {
   let md: markdownIt;
@@ -71,5 +74,14 @@ describe('markdown-it-center-text plugin', () => {
     // Note: Plugin currently renders it as </div>reversed<div class="text-center">,
     // which is possibly not schematicallly correct
     expect(result).toContain('reversed');
+  });
+
+  test('should not collide with the "--" small-text rule sharing the same "-" character', () => {
+    const mdWithSmall = markdownIt();
+    mdWithSmall.use(createDoubleDelimiterInlineRule('--', 'small', 'emphasis'));
+    mdWithSmall.use(centertext_plugin);
+
+    expect(mdWithSmall.renderInline('--Small--, ->Center-align<-'))
+      .toBe('<span class="small">Small</span>, <div class="text-center">Center-align</div>');
   });
 });

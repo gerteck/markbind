@@ -28,6 +28,11 @@
 import MarkdownIt from 'markdown-it';
 import StateInline from 'markdown-it/lib/rules_inline/state_inline';
 
+// Delimiter markers are non-negative character codes, so negative sentinels
+// used not to collide with markers used by other inline rules.
+const CENTERTEXT_OPEN_MARKER = -1;
+const CENTERTEXT_CLOSE_MARKER = -2;
+
 /**
  * A markdown-it plugin to center text using the syntax ->text<-
  */
@@ -48,7 +53,7 @@ export function centertext_plugin(md: MarkdownIt): void {
       token = state.push('text', '', 0);
       token.content = '->';
       state.delimiters.push({
-        marker: 45, // CHANGED: Use character code 45 instead of string '->'
+        marker: CENTERTEXT_OPEN_MARKER,
         jump: 0,
         token: state.tokens.length - 1,
         length: 2,
@@ -64,7 +69,7 @@ export function centertext_plugin(md: MarkdownIt): void {
       token = state.push('text', '', 0);
       token.content = '<-';
       state.delimiters.push({
-        marker: 60, // CHANGED: Use character code 60 instead of string '<-'
+        marker: CENTERTEXT_CLOSE_MARKER,
         jump: 0,
         token: state.tokens.length - 1,
         length: 2,
@@ -94,9 +99,9 @@ export function centertext_plugin(md: MarkdownIt): void {
 
     for (i = 0; i < max; i++) {
       delim = delimiters[i];
-      if (delim.marker === 45/* - */) {
+      if (delim.marker === CENTERTEXT_OPEN_MARKER) {
         foundStart = true;
-      } else if (delim.marker === 60/* < */) {
+      } else if (delim.marker === CENTERTEXT_CLOSE_MARKER) {
         foundEnd = true;
       }
     }
@@ -104,7 +109,7 @@ export function centertext_plugin(md: MarkdownIt): void {
       for (i = 0; i < max; i++) {
         delim = delimiters[i];
 
-        if (delim.marker === 45/* - */) {
+        if (delim.marker === CENTERTEXT_OPEN_MARKER) {
           foundStart = true;
           token = state.tokens[delim.token];
           token.type = 'centertext_open';
@@ -113,7 +118,7 @@ export function centertext_plugin(md: MarkdownIt): void {
           token.markup = '->';
           token.content = '';
           token.attrs = [['class', 'text-center']];
-        } else if (delim.marker === 60/* < */) {
+        } else if (delim.marker === CENTERTEXT_CLOSE_MARKER) {
           if (foundStart) {
             token = state.tokens[delim.token];
             token.type = 'centertext_close';
